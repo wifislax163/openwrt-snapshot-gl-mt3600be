@@ -1,0 +1,11 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+	case "$(board_name)" in
+	glinet,gl-mt3600be)
+		echo 1 > /sys/class/gpio/usb_power/value
+		;;
+	esac
+}

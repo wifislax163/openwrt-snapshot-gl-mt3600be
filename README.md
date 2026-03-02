@@ -1,108 +1,158 @@
 ![OpenWrt logo](include/logo.png)
 
-OpenWrt Project is a Linux operating system targeting embedded devices. Instead
-of trying to create a single, static firmware, OpenWrt provides a fully
-writable filesystem with package management. This frees you from the
-application selection and configuration provided by the vendor and allows you
-to customize the device through the use of packages to suit any application.
-For developers, OpenWrt is the framework to build an application without having
-to build a complete firmware around it; for users this means the ability for
-full customization, to use the device in ways never envisioned.
+<div align="center">
 
-Sunshine!
+<a href="https://github.com/ChuranNeko/openwrt-snapshot-gl-mt3600be/README.md">English</a> ｜
+<a href="https://github.com/ChuranNeko/openwrt-snapshot-gl-mt3600be/README_CN.md">中文</a>
 
-## Download
+</div>
 
-Built firmware images are available for many architectures and come with a
-package selection to be used as WiFi home router. To quickly find a factory
-image usable to migrate from a vendor stock firmware to OpenWrt, try the
-*Firmware Selector*.
+# openwrt-snapshot-gl-mt3600be
 
-* [OpenWrt Firmware Selector](https://firmware-selector.openwrt.org/)
+This is a fork of the official OpenWrt Snapshot, specifically tailored for the `GL-MT3600BE` device – as the repository name suggests.
 
-If your device is supported, please follow the **Info** link to see install
-instructions or consult the support resources listed below.
+## Current Status
 
-## 
+- Target Device: `GL.iNet GL-MT3600BE`
+- Target Platform: `mediatek/filogic`
+- Firmware Output: `openwrt-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin`
+- Verified: Boot, dual-band Wi-Fi, LuCI, fan control, Docker, AdGuardHome, OpenClash
 
-An advanced user may require additional or specific package. (Toolchain, SDK, ...) For everything else than simple firmware download, try the wiki download page:
+## Pre-installed Packages in the Built Firmware
 
-* [OpenWrt Wiki Download](https://openwrt.org/downloads)
+- LuCI + Argon theme
+- `opkg` & `apk`
+- OpenClash (Meta/Mihomo) – kernel needs to be downloaded after first boot
+- AdGuardHome (runs by default at `http://192.168.3.1:3000`, please use your actual router IP)
+- Docker / Dockerd / Docker Compose
+- Common Chinese translation packages:
+  - `luci-i18n-base-zh-cn`
+  - `luci-i18n-package-manager-zh-cn`
+  - `luci-i18n-firewall-zh-cn`
 
-## Development
+## Default Configuration (First Boot)
 
-To build your own firmware you need a GNU/Linux, BSD or macOS system (case
-sensitive filesystem required). Cygwin is unsupported because of the lack of a
-case sensitive file system.
+- LuCI Username: `root`
+- LuCI Password: `admin`
+- 2.4G SSID: `OpenWrt-<random 6-char alnum>`
+- 5G SSID: `OpenWrt-<random 6-char alnum>-5G`
+- Wi-Fi Password: `88888888`
+- Guest subnet reserved: `192.168.4.1/24` (disabled by default)
+- Guest SSID reserved: `OpenWrt-<same random suffix>-Guest` / `OpenWrt-<same random suffix>-Guest-5G` (disabled by default)
+- `wan2` preset: `DHCP`, `metric=30`, no bound device by default (select USB tether/NIC in LuCI)
+- `wan2_6` preset: `proto=none` (unmanaged)
 
-### Requirements
+## Building from Source
 
-You need the following tools to compile OpenWrt, the package names vary between
-distributions. A complete list with distribution specific packages is found in
-the [Build System Setup](https://openwrt.org/docs/guide-developer/build-system/install-buildsystem)
-documentation.
+If you want to build it yourself? It's simple, just follow these steps.
+
+First, install the necessary dependencies for compilation (using Debian/Ubuntu as an example):
+
+```bash
+sudo apt update
+sudo apt install build-essential libncurses5-dev gawk git libssl-dev zlib1g-dev file python3 python3-distutils rsync subversion unzip wget
 
 ```
-binutils bzip2 diff find flex gawk gcc-6+ getopt grep install libc-dev libz-dev
-make4.1+ perl python3.7+ rsync subversion unzip which
+
+Then, clone the repository and start compiling:
+
+```bash
+git clone https://github.com/ChuranNeko/openwrt-snapshot-gl-mt3600be
+cd openwrt-snapshot-gl-mt3600be
+./scripts/feeds update -a
+./scripts/feeds install -a
+make defconfig
+make -j$(nproc)
+
 ```
 
-### Quickstart
+> If you are compiling as the `root` user, it is recommended to use `export FORCE_UNSAFE_CONFIGURE=1; make -j$(nproc)` for compilation.
 
-1. Run `./scripts/feeds update -a` to obtain all the latest package definitions
-   defined in feeds.conf / feeds.conf.default
+After compilation, the firmware is located in `bin/targets/mediatek/filogic/`.
 
-2. Run `./scripts/feeds install -a` to install symlinks for all obtained
-   packages into package/feeds/
+> If you need to add other optional packages during compilation, please run `make menuconfig` to configure them before compiling.
 
-3. Run `make menuconfig` to select your preferred configuration for the
-   toolchain, target system & firmware packages.
+[Download the built firmware](https://github.com/ChuranNeko/openwrt-snapshot-gl-mt3600be/releases/latest)
 
-4. Run `make` to build your firmware. This will download all sources, build the
-   cross-compile toolchain and then cross-compile the GNU/Linux kernel & all chosen
-   applications for your target system.
+## Flashing Methods
 
-### Related Repositories
+### Using U-Boot (recommended)
 
-The main repository uses multiple sub-repositories to manage packages of
-different categories. All packages are installed via the OpenWrt package
-manager called `opkg`. If you're looking to develop the web interface or port
-packages to OpenWrt, please find the fitting repository below.
+[GL-iNet Official U-Boot Guide](https://docs.gl-inet.cn/router/4/features/uboot/#2)
 
-* [LuCI Web Interface](https://github.com/openwrt/luci): Modern and modular
-  interface to control the device via a web browser.
+### Via Web Interface
 
-* [OpenWrt Packages](https://github.com/openwrt/packages): Community repository
-  of ported packages.
+Upload the firmware through the router’s admin panel. Make sure to back up your settings first; it is **not recommended to keep settings** due to significant version differences.
 
-* [OpenWrt Routing](https://github.com/openwrt/routing): Packages specifically
-  focused on (mesh) routing.
+[GL-iNet Official Upgrade Guide](https://docs.gl-inet.cn/router/4/features/upgrade/#_3)
 
-* [OpenWrt Video](https://github.com/openwrt/video): Packages specifically
-  focused on display servers and clients (Xorg and Wayland).
+### Using SCP + SSH
 
-## Support Information
+Copy the firmware to `/tmp` and then run sysupgrade:
 
-For a list of supported devices see the [OpenWrt Hardware Database](https://openwrt.org/supported_devices)
+```bash
+scp bin/targets/mediatek/filogic/openwrt-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin root@<router_ip>:/tmp/
 
-### Documentation
+# Verify image integrity (recommended)
+ssh root@<router_ip> 'sysupgrade -T /tmp/openwrt-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin'
 
-* [Quick Start Guide](https://openwrt.org/docs/guide-quick-start/start)
-* [User Guide](https://openwrt.org/docs/guide-user/start)
-* [Developer Documentation](https://openwrt.org/docs/guide-developer/start)
-* [Technical Reference](https://openwrt.org/docs/techref/start)
+# Upgrade without preserving settings (recommended when switching from stock/other builds)
+ssh root@<router_ip> 'sysupgrade -n /tmp/openwrt-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin'
 
-### Support Community
+# To keep settings (use at your own risk)
+# ssh root@<router_ip> 'sysupgrade /tmp/openwrt-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin'
+```
 
-* [Forum](https://forum.openwrt.org): For usage, projects, discussions and hardware advise.
-* [Support Chat](https://webchat.oftc.net/#openwrt): Channel `#openwrt` on **oftc.net**.
+> `-T` only verifies the image, it does not flash.  
+> `-n` means do not keep configuration. It is strongly advised to use `-n` when migrating from stock or other distributions.
 
-### Developer Community
+## Notes
 
-* [Bug Reports](https://bugs.openwrt.org): Report bugs in OpenWrt
-* [Dev Mailing List](https://lists.openwrt.org/mailman/listinfo/openwrt-devel): Send patches
-* [Dev Chat](https://webchat.oftc.net/#openwrt-devel): Channel `#openwrt-devel` on **oftc.net**.
+- This repository is a device‑specific fork, **not** an official OpenWrt release.
+- If you need to sync with the official master branch, please rebase/merge from `openwrt/openwrt`.
+
+## Adaptation Highlights
+
+- The MT3600BE device tree, image definition, network mapping, LED, and USB power supply scripts are now compatible.
+
+- A `turn_on_usb_power` boot script has been added, which will raise the `usb_power` GPIO upon startup (see the original firmware for reference).
+
+- Wi-Fi has been verified to successfully launch dual-band APs.
+
+- **Fan curve optimization**: The PWM fan speed has been remapped. The new curve is 0/96/160/224/255 (corresponding to 0%/38%/63%/88%/100%), which provides a larger initial airflow and smoother transition compared to the original 0/64/128/192/255 (0%/25%/50%/75%/100%), balancing heat dissipation and quiet operation.
+
+- USB tethering/common modem support packages are included (RNDIS/ECM/NCM/MBIM/QMI).
+
+## Package Management
+
+- The current Snapshot tree primarily uses `apk`.
+- This image also includes `opkg` for compatibility with certain scenarios.
+- Third‑party plugins that strictly depend on pure `opkg` metadata may experience dependency resolution issues.
+
+## Known Issues
+
+- OpenClash includes only the frontend and configuration; the Meta kernel binary usually needs to be downloaded after the first boot.
+- If USB devices are not enumerated, first check the power supply and cable quality; a high‑current adapter is recommended.
+- This OpenWrt version **does not support** iStore, as iStore’s highest supported version is OpenWrt `24.10`.
 
 ## License
 
-OpenWrt is licensed under GPL-2.0
+This project is a secondary customization based on OpenWrt, and overall follows the upstream open‑source licenses.
+
+- Upstream OpenWrt: `GPL-2.0`
+- New scripts/configurations added in this repository are also released under `GPL-2.0` by default.
+
+Third‑party components (such as LuCI, Docker, AdGuardHome, OpenClash, Argon, etc.) are subject to their respective upstream licenses. Please refer to the corresponding source code and package metadata for details.
+
+## Acknowledgements
+
+- Thanks to the OpenWrt community and maintainers for providing a stable mainline foundation.
+- Thanks to the GL.iNet community and contributors for documentation and assistance in debugging MT3600BE adaptation.
+- Thanks to the x-wrt project for providing reference paths (e.g., device adaptation and driver migration ideas).
+- And thanks to myself :).
+
+> P.S. I originally wanted to base this on OpenWrt 24.10, but kept hitting walls, so I decided to go with the latest `main` snapshot instead.
+
+## Sponsor
+
+[Buy me a coffee](https://blog.crneko.top/sponsor/)

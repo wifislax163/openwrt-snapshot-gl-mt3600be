@@ -1,0 +1,63 @@
+name: MT3600BE Release Draft
+
+on:
+  workflow_run:
+    workflows: ["MT3600BE Build"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Download build artifact from previous workflow
+        uses: actions/download-artifact@v4
+        with:
+          name: mt3600be-firmware
+          path: out
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve version tag
+        id: ver
+        run: |
+          VERSION="$(cat out/version.txt)"
+          TAG="${VERSION}"
+          if git ls-remote --exit-code --tags "https://github.com/${GITHUB_REPOSITORY}.git" "refs/tags/${TAG}" >/dev/null 2>&1; then
+            TAG="${TAG}-${GITHUB_RUN_NUMBER}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Create draft release with assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          target_commitish: ${{ github.event.workflow_run.head_sha }}
+          name: ${{ steps.ver.outputs.tag }}
+          draft: true
+          prerelease: true
+          body: |
+            Automated build for GL-MT3600BE.
+
+            - Version: `${{ steps.ver.outputs.version }}`
+            - Source commit: `${{ github.event.workflow_run.head_sha }}`
+
+            Assets:
+            - `${{ steps.ver.outputs.version }}.bin`
+            - `${{ steps.ver.outputs.version }}.sha`
+          files: |
+            out/*.bin
+            out/*.sha
