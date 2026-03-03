@@ -36,13 +36,14 @@ jobs:
 
       - name: Build firmware
         run: |
+          cp configs/mt3600be.seed .config
           make defconfig
           make -j"$(nproc)" || make -j1 V=s
 
       - name: Package firmware artifact
         run: |
           set -e
-          FW="bin/targets/mediatek/filogic/openwrt-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin"
+          FW="$(ls bin/targets/*/*/*glinet_gl-mt3600be*-squashfs-sysupgrade.bin | head -n 1)"
           test -f "$FW"
           VERSION="$(git show -s --date=format:%y%m%d%H --format=%cd ${{ github.event.workflow_run.head_sha }})"
           mkdir -p out

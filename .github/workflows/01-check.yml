@@ -32,4 +32,5 @@ jobs:
 
       - name: Config sanity check
         run: |
+          cp configs/mt3600be.seed .config
           make defconfig
