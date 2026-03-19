@@ -16,7 +16,7 @@ This is a fork of the official OpenWrt Snapshot, specifically tailored for the `
 - Target Device: `GL.iNet GL-MT3600BE`
 - Target Platform: `mediatek/filogic`
 - Firmware Output: `openwrt-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin`
-- Verified: Boot, dual-band Wi-Fi, LuCI, fan control, Docker, AdGuardHome, OpenClash
+- Verified: Boot, dual-band Wi-Fi, LuCI, fan control, AdGuardHome, OpenClash
 
 ## Pre-installed Packages in the Built Firmware
 
@@ -24,7 +24,7 @@ This is a fork of the official OpenWrt Snapshot, specifically tailored for the `
 - `opkg` & `apk`
 - OpenClash (Meta/Mihomo) – kernel needs to be downloaded after first boot
 - AdGuardHome (runs by default at `http://192.168.3.1:3000`, please use your actual router IP)
-- Docker / Dockerd / Docker Compose
+
 - Common Chinese translation packages:
   - `luci-i18n-base-zh-cn`
   - `luci-i18n-package-manager-zh-cn`
@@ -142,7 +142,7 @@ This project is a secondary customization based on OpenWrt, and overall follows 
 - Upstream OpenWrt: `GPL-2.0`
 - New scripts/configurations added in this repository are also released under `GPL-2.0` by default.
 
-Third‑party components (such as LuCI, Docker, AdGuardHome, OpenClash, Argon, etc.) are subject to their respective upstream licenses. Please refer to the corresponding source code and package metadata for details.
+Third‑party components (such as LuCI, AdGuardHome, OpenClash, Argon, etc.) are subject to their respective upstream licenses. Please refer to the corresponding source code and package metadata for details.
 
 ## Acknowledgements
 

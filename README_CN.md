@@ -16,7 +16,7 @@
 - 目标设备: `GL.iNet GL-MT3600BE`
 - 目标平台: `mediatek/filogic`
 - 固件产物: `openwrt-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin`
-- 已验证: 启动、双频 Wi-Fi、LuCI、风扇、Docker、AdGuardHome、OpenClash
+- 已验证: 启动、双频 Wi-Fi、LuCI、风扇、AdGuardHome、OpenClash
 
 ## 当前构建固件集成包
 
@@ -24,7 +24,7 @@
 - `opkg` 与 `apk`
 - OpenClash (Meta/Mihomo)(需自行下载内核)
 - AdGuardHome(默认运行在 `http://192.168.3.1:3000`,具体以实际路由器IP地址为准)
-- Docker / Dockerd / Docker Compose
+
 - 常用中文包:
   - `luci-i18n-base-zh-cn`
   - `luci-i18n-package-manager-zh-cn`
@@ -137,7 +137,7 @@ ssh root@<路由器ip> 'sysupgrade -n /tmp/openwrt-mediatek-filogic-glinet_gl-mt
 - 上游 OpenWrt: `GPL-2.0`
 - 本仓库新增脚本/配置默认同样按 `GPL-2.0` 方式发布
 
-第三方组件（如 LuCI、Docker、AdGuardHome、OpenClash、Argon 等）遵循各自上游许可证，具体以对应源码与包元数据为准。
+第三方组件（如 LuCI、AdGuardHome、OpenClash、Argon 等）遵循各自上游许可证，具体以对应源码与包元数据为准。
 
 ## 感谢
 
