@@ -23,7 +23,7 @@ This is a fork of the official OpenWrt Snapshot, specifically tailored for the `
 - LuCI + Argon theme
 - `opkg` & `apk`
 - OpenClash (Meta/Mihomo) – kernel needs to be downloaded after first boot
-- AdGuardHome (runs by default at `http://192.168.3.1:3000`, please use your actual router IP)
+- AdGuardHome (runs by default at `http://192.168.1.1:3000`, please use your actual router IP)
 
 - Common Chinese translation packages:
   - `luci-i18n-base-zh-cn`

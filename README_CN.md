@@ -23,7 +23,7 @@
 - LuCI + Argon 主题
 - `opkg` 与 `apk`
 - OpenClash (Meta/Mihomo)(需自行下载内核)
-- AdGuardHome(默认运行在 `http://192.168.3.1:3000`,具体以实际路由器IP地址为准)
+- AdGuardHome(默认运行在 `http://192.168.1.1:3000`,具体以实际路由器IP地址为准)
 
 - 常用中文包:
   - `luci-i18n-base-zh-cn`
