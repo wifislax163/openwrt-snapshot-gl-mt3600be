@@ -6,15 +6,16 @@ PKG_RELEASE=1
 PKG_LICENSE:=BSD-3-Clause-Clear
 PKG_LICENSE_FILES:=
 
-PKG_SOURCE_VERSION:=20260220
-PKG_SOURCE_URL:=https://codeload.github.com/ptpt52/mt76/tar.gz/$(PKG_SOURCE_VERSION)?
-PKG_HASH:=1491e86fbd552ac21389171d5e4dbf4b1b0caa2b066f362cc5d24534458c2662
+PKG_SOURCE_VERSION:=39c960c3ada558b4c2e7915772483d3731573d09
+PKG_SOURCE_URL:=https://codeload.github.com/openwrt/mt76/tar.gz/$(PKG_SOURCE_VERSION)?
+PKG_HASH:=ca24b84b9b419b7aeacb2324ea80be7be0f52ff7cc2e14420b59f5ac853178c0
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_VERSION).tar.gz
-PKG_VERSION:=$(PKG_SOURCE_VERSION)
+PKG_VERSION:=20260319
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 PKG_USE_NINJA:=0
 PKG_BUILD_PARALLEL:=1
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_SOURCE_VERSION)
 
 PKG_CONFIG_DEPENDS += \
 	CONFIG_PACKAGE_kmod-mt76-usb \
@@ -35,7 +36,6 @@ include $(INCLUDE_DIR)/cmake.mk
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
-	$(SED) 's/chandef->chan != phy->main_chandef.chan || ieee80211_get_scanning(phy->hw)/chandef->chan != phy->main_chandef.chan/' $(PKG_BUILD_DIR)/mac80211.c
 endef
 
 CMAKE_SOURCE_DIR:=$(PKG_BUILD_DIR)/tools
